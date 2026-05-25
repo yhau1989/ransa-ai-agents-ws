@@ -408,9 +408,10 @@ export default function PQRSForm() {
   const [activeUploadsCount, setActiveUploadsCount] = useState(0);
   const [emails, setEmails] = useState<string[]>([]);
   const [clientError, setClientError] = useState("");
+  const [resetKey, setResetKey] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const { register, getValues, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  const { register, getValues, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
       eventDate: "",
       confirmDate: "",
@@ -431,6 +432,20 @@ export default function PQRSForm() {
       ciudades: "",
     },
   });
+
+  React.useEffect(() => {
+    if (submissionState.success) {
+      reset();
+      setEmails([]);
+      setFileUrls({
+        supportFileUrl: "",
+        supportFile2Url: "",
+        certificateFileUrl: "",
+        valueSheetFileUrl: "",
+      });
+      setResetKey((prev) => prev + 1);
+    }
+  }, [submissionState, reset]);
 
   const setFileUrl = (field: keyof FileUploadUrls, url: string) => {
     setFileUrls((prev) => ({ ...prev, [field]: url }));
@@ -859,6 +874,7 @@ export default function PQRSForm() {
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <FileInputField
+                key={`support-file-1-${resetKey}`}
                 label="Soporte de la novedad reportada I"
                 name="soporteFile"
                 folder="support-file-1"
@@ -869,6 +885,7 @@ export default function PQRSForm() {
               />
 
               <FileInputField
+                key={`support-file-2-${resetKey}`}
                 label="Soporte de la novedad reportada II"
                 name="soporteFile2"
                 folder="support-file-2"
@@ -879,6 +896,7 @@ export default function PQRSForm() {
               />
 
               <FileInputField
+                key={`certificate-${resetKey}`}
                 label="Certificado de revisor fiscal o legal"
                 name="certificadoFile"
                 folder="certificate"
@@ -889,6 +907,7 @@ export default function PQRSForm() {
               />
 
               <FileInputField
+                key={`value-sheet-${resetKey}`}
                 label="Formato cuadro valor costo diligenciado"
                 name="cuadroValorFile"
                 folder="value-sheet"

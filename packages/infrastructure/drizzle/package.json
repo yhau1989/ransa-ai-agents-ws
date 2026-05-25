@@ -1,0 +1,23 @@
+{
+  "name": "@ransa/infrastructure-drizzle",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "drizzle:generate:raw": "drizzle-kit generate",
+    "drizzle:generate": "pnpm drizzle:generate:raw && node ./scripts/add-drop-if-exists.mjs",
+    "drizzle:migrate": "drizzle-kit migrate",
+    "drizzle:studio": "drizzle-kit studio"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.7",
+    "dotenv": "^16.6.1",
+    "pg": "^8.16.3",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

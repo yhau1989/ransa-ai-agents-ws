@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "a2b97cda-8b54-44bf-87f5-2070e633d749",
+    "name": "PQRS API Collection",
+    "description": "Collection to test and consume the published PQRS Submission API route (`POST /api/pqrs`).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Submit PQRS - Success Case",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{API_ACCESS_KEY}}",
+            "type": "text",
+            "description": "Required if API_ACCESS_KEY env variable is configured in the Next.js app."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"eventDate\": \"2026-05-25\",\n  \"confirmDate\": \"2026-05-25\",\n  \"empresa\": \"Ransa Test S.A.\",\n  \"relacion\": \"Cliente\",\n  \"tipoSolicitud\": \"Reclamo\",\n  \"nombreCliente\": \"Postman User\",\n  \"nitCc\": \"1234567890\",\n  \"descripcion\": \"Envío de PQRS de prueba realizado desde Postman.\",\n  \"valorVenta\": \"10000\",\n  \"valorCosto\": \"8000\",\n  \"telefono\": \"3009876543\",\n  \"region\": \"Costa\",\n  \"proceso\": \"Distribución\",\n  \"tipoServicio\": \"Transporte\",\n  \"ciudades\": \"Barranquilla\",\n  \"emails\": [\n    \"postman-test@ransa.com\"\n  ],\n  \"supportFileUrl\": \"https://lstyjnwlrboocjuzzngh.supabase.co/storage/v1/object/public/form_files/soporte1.pdf\",\n  \"supportFile2Url\": \"https://lstyjnwlrboocjuzzngh.supabase.co/storage/v1/object/public/form_files/soporte2.pdf\",\n  \"valueSheetFileUrl\": \"https://lstyjnwlrboocjuzzngh.supabase.co/storage/v1/object/public/form_files/cuadro_valor.xlsx\",\n  \"certificateFileUrl\": null,\n  \"channel\": \"postman\",\n  \"transportProcess\": null\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/pqrs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "pqrs"
+          ]
+        },
+        "description": "Submits a full valid PQRS request payload. Expects a 200 OK response."
+      },
+      "response": []
+    },
+    {
+      "name": "Submit PQRS - Validation Error (Date Mismatch)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{API_ACCESS_KEY}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"eventDate\": \"2026-05-25\",\n  \"confirmDate\": \"2026-05-26\",\n  \"empresa\": \"Ransa Test S.A.\",\n  \"relacion\": \"Cliente\",\n  \"tipoSolicitud\": \"Reclamo\",\n  \"nombreCliente\": \"Postman User\",\n  \"nitCc\": \"1234567890\",\n  \"descripcion\": \"Este envío fallará por fecha de confirmación diferente a fecha de evento.\",\n  \"valorVenta\": \"10000\",\n  \"valorCosto\": \"8000\",\n  \"telefono\": \"3009876543\",\n  \"region\": \"Costa\",\n  \"proceso\": \"Distribución\",\n  \"tipoServicio\": \"Transporte\",\n  \"ciudades\": \"Barranquilla\",\n  \"emails\": [\n    \"postman-test@ransa.com\"\n  ],\n  \"supportFileUrl\": \"https://lstyjnwlrboocjuzzngh.supabase.co/storage/v1/object/public/form_files/soporte1.pdf\",\n  \"supportFile2Url\": \"https://lstyjnwlrboocjuzzngh.supabase.co/storage/v1/object/public/form_files/soporte2.pdf\",\n  \"valueSheetFileUrl\": \"https://lstyjnwlrboocjuzzngh.supabase.co/storage/v1/object/public/form_files/cuadro_valor.xlsx\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/pqrs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "pqrs"
+          ]
+        },
+        "description": "Attempts submission with eventDate !== confirmDate. Expects a 400 Bad Request response."
+      },
+      "response": []
+    },
+    {
+      "name": "Submit PQRS - Validation Error (Missing Field)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{API_ACCESS_KEY}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"eventDate\": \"2026-05-25\",\n  \"confirmDate\": \"2026-05-25\",\n  \"relacion\": \"Cliente\",\n  \"tipoSolicitud\": \"Reclamo\",\n  \"nombreCliente\": \"Postman User\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/pqrs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "pqrs"
+          ]
+        },
+        "description": "Attempts submission missing mandatory fields (e.g. empresa, nitCc, etc). Expects a 400 Bad Request response."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "API_ACCESS_KEY",
+      "value": "your_api_token_here",
+      "type": "string"
+    }
+  ]
+}

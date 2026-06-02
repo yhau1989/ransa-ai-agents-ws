@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
       certificateFileUrl: body.certificateFileUrl || null,
       channel: body.channel || "api",
       transportProcess: body.transportProcess || null,
+      whatsappExecutionId: body.whatsappExecutionId || null,
     };
 
     // 4. Run business logic and DB insertion

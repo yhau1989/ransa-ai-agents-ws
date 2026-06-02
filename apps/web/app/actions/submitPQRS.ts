@@ -30,6 +30,7 @@ export interface PQRSSubmissionData {
   certificateFileUrl?: string | null;
   channel?: string | null;
   transportProcess?: string | null;
+  whatsappExecutionId?: string | null;
 }
 
 const REQUIRED_TEXT_FIELDS = [
@@ -76,7 +77,8 @@ export async function processPQRS(
     if (eventDate !== confirmDate) {
       return {
         success: false,
-        message: "La confirmación de fecha no coincide con la fecha del evento.",
+        message:
+          "La confirmación de fecha no coincide con la fecha del evento.",
       };
     }
 
@@ -127,6 +129,7 @@ export async function processPQRS(
       support_file_2_url: supportFile2Url,
       certificate_file_url: certificateFileUrl,
       value_sheet_file_url: valueSheetFileUrl,
+      whatsapp_execution_id: data.whatsappExecutionId?.trim() || null,
     };
 
     const { error } = await supabase.from("form_submissions").insert(payload);
@@ -165,7 +168,8 @@ export async function submitPQRS(
       const parsed = JSON.parse(emailsRaw);
       emails = Array.isArray(parsed)
         ? parsed.filter(
-            (item): item is string => typeof item === "string" && item.trim().length > 0,
+            (item): item is string =>
+              typeof item === "string" && item.trim().length > 0,
           )
         : [];
     } catch {
@@ -192,7 +196,8 @@ export async function submitPQRS(
       supportFileUrl: getStringField(formData, "supportFileUrl"),
       supportFile2Url: getStringField(formData, "supportFile2Url"),
       valueSheetFileUrl: getStringField(formData, "valueSheetFileUrl"),
-      certificateFileUrl: getStringField(formData, "certificateFileUrl") || null,
+      certificateFileUrl:
+        getStringField(formData, "certificateFileUrl") || null,
       channel: getStringField(formData, "channel") || "web",
       transportProcess: getStringField(formData, "transportProcess") || null,
     };

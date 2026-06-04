@@ -113,7 +113,6 @@ export default function PQRSForm() {
 
   const currentStep = usePQRSStore((state) => state.currentStep);
   const formData = usePQRSStore((state) => state.formData);
-  const completedSteps = usePQRSStore((state) => state.completedSteps);
   const resetStore = usePQRSStore((state) => state.resetStore);
   const validateStep = usePQRSStore((state) => state.validateStep);
   const [clientError, setClientError] = React.useState("");

@@ -7,6 +7,8 @@ import { usePQRSStore } from "../stores/pqrsStore";
 const fieldClassName =
   "w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-ransa-500 bg-white text-gray-700 placeholder-gray-400 hover:border-gray-400 shadow-sm text-sm";
 
+const dateFieldClassName = `${fieldClassName} date-input-standardized pr-11`;
+
 const errorFieldClassName =
   "border-red-300 focus:ring-red-500 hover:border-red-400";
 
@@ -17,6 +19,82 @@ interface Step1FormData {
   relacion: string;
   tipoSolicitud: string;
 }
+
+type DateFieldProps = React.InputHTMLAttributes<HTMLInputElement>;
+
+function CalendarIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-5 w-5 text-ransa-600"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8 7V3m8 4V3M4 11h16M6 5h12a2 2 0 0 1 2 2v13H4V7a2 2 0 0 1 2-2Z"
+      />
+    </svg>
+  );
+}
+
+const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(
+  function DateField({ className = "", onClick, ...props }, ref) {
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+    const setRefs = React.useCallback(
+      (node: HTMLInputElement | null) => {
+        inputRef.current = node;
+
+        if (typeof ref === "function") {
+          ref(node);
+          return;
+        }
+
+        if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref],
+    );
+
+    const openDatePicker = () => {
+      inputRef.current?.focus();
+
+      try {
+        inputRef.current?.showPicker?.();
+      } catch {
+        // Some browsers only allow the native picker from direct user actions.
+      }
+    };
+
+    return (
+      <div className="relative">
+        <input
+          type="date"
+          {...props}
+          ref={setRefs}
+          className={className}
+          onClick={(event) => {
+            onClick?.(event);
+            openDatePicker();
+          }}
+        />
+        <button
+          type="button"
+          aria-label="Abrir calendario"
+          className="absolute inset-y-0 right-3 flex cursor-pointer items-center"
+          onClick={openDatePicker}
+        >
+          <CalendarIcon />
+        </button>
+      </div>
+    );
+  },
+);
 
 export function Step1Evento() {
   const formData = usePQRSStore((state) => state.formData);
@@ -73,12 +151,11 @@ export function Step1Evento() {
           <label className="mb-2 block text-sm font-semibold text-gray-700">
             Fecha del evento <span className="text-ransa-accent">*</span>
           </label>
-          <input
-            type="date"
+          <DateField
             {...register("eventDate", {
               required: "La fecha del evento es obligatoria.",
             })}
-            className={`${fieldClassName} ${errors.eventDate ? errorFieldClassName : ""}`}
+            className={`${dateFieldClassName} ${errors.eventDate ? errorFieldClassName : ""}`}
           />
           {errors.eventDate && (
             <p className="mt-1.5 text-xs text-red-500 font-semibold">
@@ -91,15 +168,14 @@ export function Step1Evento() {
           <label className="mb-2 block text-sm font-semibold text-gray-700">
             Confirme la fecha <span className="text-ransa-accent">*</span>
           </label>
-          <input
-            type="date"
+          <DateField
             {...register("confirmDate", {
               required: "Debe confirmar la fecha del evento.",
               validate: (value) =>
                 value === getValues("eventDate") ||
                 "La confirmación de fecha no coincide con la fecha del evento.",
             })}
-            className={`${fieldClassName} ${errors.confirmDate ? errorFieldClassName : ""}`}
+            className={`${dateFieldClassName} ${errors.confirmDate ? errorFieldClassName : ""}`}
           />
           {errors.confirmDate && (
             <p className="mt-1.5 text-xs text-red-500 font-semibold">

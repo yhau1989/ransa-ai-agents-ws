@@ -4,6 +4,10 @@ const config: Config = {
   content: ["./app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: "var(--font-plus-jakarta-sans)",
+        italic: "var(--font-plus-jakarta-sans-italic)",
+      },
       colors: {
         ransa: {
           // Verde principal (RANSA green)
@@ -18,6 +22,7 @@ const config: Config = {
           800: "#007a3a",
           900: "#005c2e",
           950: "#003d1f",
+          light: "#a8e6bf",
           // Naranja/Rojo acento
           accent: "#FF6B35",
           "accent-light": "#FFB59A",

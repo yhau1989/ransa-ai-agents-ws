@@ -48,17 +48,7 @@ a {
 
 .date-input-standardized {
   appearance: none;
-  color-scheme: light;
-}
-
-.date-input-standardized::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  opacity: 0;
-}
-
-.date-input-standardized::-webkit-inner-spin-button,
-.date-input-standardized::-webkit-clear-button {
-  display: none;
 }
 
 .banner-fade-up,

@@ -22,6 +22,12 @@ interface Step1FormData {
 
 type DateFieldProps = React.InputHTMLAttributes<HTMLInputElement>;
 
+const weekDays = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"];
+const monthFormatter = new Intl.DateTimeFormat("es-CO", {
+  month: "long",
+  year: "numeric",
+});
+
 function CalendarIcon() {
   return (
     <svg
@@ -42,8 +48,17 @@ function CalendarIcon() {
 }
 
 const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(
-  function DateField({ className = "", onClick, ...props }, ref) {
+  function DateField({ className = "", onChange, onClick, ...props }, ref) {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
+    const fieldRef = React.useRef<HTMLDivElement | null>(null);
+    const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
+    const [viewDate, setViewDate] = React.useState(() => new Date());
+    const [selectedValue, setSelectedValue] = React.useState(() =>
+      String(props.value ?? props.defaultValue ?? ""),
+    );
+
+    const selectedDate = parseDateValue(selectedValue);
+    const calendarDays = getCalendarDays(viewDate);
 
     const setRefs = React.useCallback(
       (node: HTMLInputElement | null) => {
@@ -62,22 +77,75 @@ const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(
     );
 
     const openDatePicker = () => {
-      inputRef.current?.focus();
-
-      try {
-        inputRef.current?.showPicker?.();
-      } catch {
-        // Some browsers only allow the native picker from direct user actions.
+      if (inputRef.current?.value) {
+        setSelectedValue(inputRef.current.value);
+        setViewDate(parseDateValue(inputRef.current.value) ?? new Date());
       }
+
+      setIsCalendarOpen(true);
     };
 
+    const selectDate = (date: Date) => {
+      const nextValue = formatDateValue(date);
+
+      setSelectedValue(nextValue);
+
+      if (inputRef.current) {
+        inputRef.current.value = nextValue;
+        onChange?.({
+          target: inputRef.current,
+          currentTarget: inputRef.current,
+        } as React.ChangeEvent<HTMLInputElement>);
+      }
+
+      setIsCalendarOpen(false);
+    };
+
+    const changeMonth = (monthOffset: number) => {
+      setViewDate(
+        (currentDate) =>
+          new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth() + monthOffset,
+            1,
+          ),
+      );
+    };
+
+    React.useEffect(() => {
+      setSelectedValue(inputRef.current?.value ?? "");
+    }, []);
+
+    React.useEffect(() => {
+      if (!isCalendarOpen) return;
+
+      const handlePointerDown = (event: PointerEvent) => {
+        if (!fieldRef.current?.contains(event.target as Node)) {
+          setIsCalendarOpen(false);
+        }
+      };
+
+      document.addEventListener("pointerdown", handlePointerDown);
+
+      return () => {
+        document.removeEventListener("pointerdown", handlePointerDown);
+      };
+    }, [isCalendarOpen]);
+
     return (
-      <div className="relative">
+      <div ref={fieldRef} className="relative">
         <input
-          type="date"
+          type="hidden"
           {...props}
           ref={setRefs}
+        />
+        <input
+          type="text"
+          inputMode="numeric"
           className={className}
+          value={formatDisplayDate(selectedValue)}
+          placeholder="dd/mm/aaaa"
+          readOnly
           onClick={(event) => {
             onClick?.(event);
             openDatePicker();
@@ -86,15 +154,117 @@ const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(
         <button
           type="button"
           aria-label="Abrir calendario"
-          className="absolute inset-y-0 right-3 flex cursor-pointer items-center"
+          className="absolute inset-y-px right-px flex w-12 cursor-pointer items-center justify-center rounded-r-lg bg-white"
           onClick={openDatePicker}
         >
           <CalendarIcon />
         </button>
+        {isCalendarOpen && (
+          <div className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-72 rounded-lg border border-gray-200 bg-white p-3 shadow-xl">
+            <div className="mb-3 flex items-center justify-between">
+              <button
+                type="button"
+                aria-label="Mes anterior"
+                className="rounded-md px-2 py-1 text-gray-600 hover:bg-gray-100"
+                onClick={() => changeMonth(-1)}
+              >
+                ‹
+              </button>
+              <p className="text-sm font-semibold capitalize text-gray-800">
+                {monthFormatter.format(viewDate)}
+              </p>
+              <button
+                type="button"
+                aria-label="Mes siguiente"
+                className="rounded-md px-2 py-1 text-gray-600 hover:bg-gray-100"
+                onClick={() => changeMonth(1)}
+              >
+                ›
+              </button>
+            </div>
+            <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500">
+              {weekDays.map((day) => (
+                <span key={day} className="py-1">
+                  {day}
+                </span>
+              ))}
+            </div>
+            <div className="mt-1 grid grid-cols-7 gap-1">
+              {calendarDays.map((day) => {
+                const isCurrentMonth = day.getMonth() === viewDate.getMonth();
+                const isSelected =
+                  selectedDate !== null &&
+                  formatDateValue(day) === formatDateValue(selectedDate);
+
+                return (
+                  <button
+                    key={formatDateValue(day)}
+                    type="button"
+                    className={`h-8 rounded-md text-sm transition-colors ${
+                      isSelected
+                        ? "bg-ransa-600 font-semibold text-white"
+                        : isCurrentMonth
+                          ? "text-gray-700 hover:bg-ransa-50"
+                          : "text-gray-300 hover:bg-gray-50"
+                    }`}
+                    onClick={() => selectDate(day)}
+                  >
+                    {day.getDate()}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     );
   },
 );
+
+function parseDateValue(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+
+  if (!match) return null;
+
+  const [, year, month, day] = match;
+
+  return new Date(Number(year), Number(month) - 1, Number(day));
+}
+
+function formatDateValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatDisplayDate(value: string) {
+  const date = parseDateValue(value);
+
+  if (!date) return "";
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
+function getCalendarDays(date: Date) {
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  const mondayOffset = (firstDayOfMonth.getDay() + 6) % 7;
+  const firstCalendarDay = new Date(firstDayOfMonth);
+
+  firstCalendarDay.setDate(firstDayOfMonth.getDate() - mondayOffset);
+
+  return Array.from({ length: 42 }, (_, index) => {
+    const calendarDate = new Date(firstCalendarDay);
+    calendarDate.setDate(firstCalendarDay.getDate() + index);
+
+    return calendarDate;
+  });
+}
 
 export function Step1Evento() {
   const formData = usePQRSStore((state) => state.formData);

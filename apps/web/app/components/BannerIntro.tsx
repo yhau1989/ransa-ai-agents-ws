@@ -9,16 +9,17 @@ export default function BannerIntro() {
         <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-8 md:gap-12">
           {/* Left Content */}
           <div className="flex-1 flex flex-col justify-center md:pr-8">
-            <h1 className="text-4xl font-extrabold mb-4 text-center font-stretch-50% text-white">
-              Sistema <span className="text-ransa-light">PQRS</span>
+            <h1 className="banner-fade-up text-4xl font-extrabold mb-4 text-center font-stretch-50% text-white">
+              Sistema{" "}
+              <span className="banner-highlight text-ransa-light">PQRS</span>
             </h1>
 
-            <p className="text-md mb-4 text-gray-100 font-light text-center opacity-80">
+            <p className="banner-fade-up banner-delay-1 text-md mb-4 text-gray-100 font-light text-center opacity-80">
               Peticiones · Quejas · Reconocimientos · Sugerencias
             </p>
 
             {/* Button Group */}
-            <div className="flex flex-row justify-center gap-4 text-slate-100">
+            <div className="banner-fade-up banner-delay-2 flex flex-row justify-center gap-4 text-slate-100">
               <a
                 href="#"
                 className="rounded-full text-white py-1 px-3 text-[11px] sm:text-xs shadow-lg transition-all duration-200  text-center border border-slate-50 opacity-70"
@@ -36,8 +37,8 @@ export default function BannerIntro() {
           </div>
 
           {/* Right Content - Mascot Image */}
-          <div className="w-auto flex flex-col justify-center md:justify-end">
-            <div className="relative h-40 w-40 rounded-full overflow-hidden shadow-lg border-4 border-ransa-light">
+          <div className="banner-fade-left banner-delay-3 w-auto flex flex-col justify-center md:justify-end">
+            <div className="banner-float relative h-40 w-40 rounded-full overflow-hidden shadow-lg border-4 border-ransa-light">
               <Image
                 src="/mascot-ransa.jpg"
                 alt="Mascota RANSA"
@@ -46,7 +47,7 @@ export default function BannerIntro() {
                 priority
               />
             </div>
-            <div className="text-white text-center mt-2 text-xs font-bold opacity-80">
+            <div className="banner-fade-up banner-delay-4 text-white text-center mt-2 text-xs font-bold opacity-80">
               EN RUTA CON USTED
             </div>
           </div>

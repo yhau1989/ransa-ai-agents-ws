@@ -1,6 +1,7 @@
 "use client";
 
 import BannerIntro from "./components/BannerIntro";
+import Footer from "./components/Footer";
 import HeaderPage from "./components/HeaderPage";
 import PQRSForm from "./components/PQRSForm";
 import Stepper from "./components/Stepper";
@@ -26,6 +27,7 @@ export default function Home() {
         completedSteps={completedSteps}
       />
       <PQRSForm />
+      <Footer />
     </>
   );
 }

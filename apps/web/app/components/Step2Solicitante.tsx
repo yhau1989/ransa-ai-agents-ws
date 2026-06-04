@@ -11,7 +11,7 @@ const errorFieldClassName =
   "border-red-300 focus:ring-red-500 hover:border-red-400";
 
 const primaryButtonClassName =
-  "rounded-lg bg-ransa-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-ransa-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ransa-500 focus:ring-offset-2";
+  "rounded-full bg-ransa-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-ransa-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ransa-500 focus:ring-offset-2";
 
 interface Step2FormData {
   nombreCliente: string;

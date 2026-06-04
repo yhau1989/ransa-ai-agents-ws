@@ -184,7 +184,7 @@ function FileInputField({
           <button
             type="button"
             onClick={handleRemove}
-            className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors shrink-0"
+            className="rounded-full p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

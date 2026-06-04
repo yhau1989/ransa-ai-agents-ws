@@ -10,9 +10,14 @@ interface Step {
 interface StepperProps {
   steps: Step[];
   currentStep: number;
+  completedSteps?: number[];
 }
 
-export default function Stepper({ steps, currentStep }: StepperProps) {
+export default function Stepper({
+  steps,
+  currentStep,
+  completedSteps = [],
+}: StepperProps) {
   const { isSticky, ref, sentinelRef } = useScrollDirection();
 
   return (
@@ -31,41 +36,48 @@ export default function Stepper({ steps, currentStep }: StepperProps) {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          {steps.map((step, index) => (
-            <div key={step.number} className="flex items-center">
-              {/* Step circle and label */}
-              <div className="flex flex-col items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg transition-all ${
-                    step.number <= currentStep
-                      ? "bg-ransa-800 text-white"
-                      : "bg-gray-200 text-gray-600 shadow-gray-500"
-                  }`}
-                >
-                  {step.number}
-                </div>
-                <p
-                  className={`mt-2 text-xs font-medium ${
-                    step.number <= currentStep
-                      ? "text-ransa-600"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {step.label}
-                </p>
-              </div>
+          {steps.map((step, index) => {
+            const isCompleted = completedSteps.includes(step.number);
+            const isActive = step.number === currentStep;
 
-              {/* Connector line */}
-              {index < steps.length - 1 && (
-                <div
-                  className={`w-16 h-1 mx-2 transition-all ${
-                    step.number < currentStep ? "bg-green-600" : "bg-gray-300"
-                  }`}
-                  style={{ marginTop: "-2rem" }}
-                />
-              )}
-            </div>
-          ))}
+            return (
+              <div key={step.number} className="flex items-center">
+                {/* Step circle and label */}
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg transition-all ${
+                      isCompleted
+                        ? "bg-green-600 text-white"
+                        : isActive
+                          ? "bg-ransa-800 text-white"
+                          : "bg-gray-200 text-gray-600 shadow-gray-500"
+                    }`}
+                  >
+                    {isCompleted ? "✓" : step.number}
+                  </div>
+                  <p
+                    className={`mt-2 text-xs font-medium ${
+                      isCompleted || isActive
+                        ? "text-ransa-600"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {step.label}
+                  </p>
+                </div>
+
+                {/* Connector line */}
+                {index < steps.length - 1 && (
+                  <div
+                    className={`w-16 h-1 mx-2 transition-all ${
+                      isCompleted ? "bg-green-600" : "bg-gray-300"
+                    }`}
+                    style={{ marginTop: "-2rem" }}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </>

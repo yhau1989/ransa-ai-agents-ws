@@ -51,6 +51,29 @@ a {
   cursor: pointer;
 }
 
+.email-input-readable,
+.email-input-readable:focus,
+.email-input-readable:hover {
+  color: #111827;
+  -webkit-text-fill-color: #111827;
+  background-color: #ffffff;
+  caret-color: #1a8c4e;
+}
+
+.email-input-readable::placeholder {
+  color: #9ca3af;
+  -webkit-text-fill-color: #9ca3af;
+  opacity: 1;
+}
+
+.email-input-readable:-webkit-autofill,
+.email-input-readable:-webkit-autofill:hover,
+.email-input-readable:-webkit-autofill:focus {
+  -webkit-text-fill-color: #111827;
+  box-shadow: 0 0 0 1000px #ffffff inset;
+  caret-color: #1a8c4e;
+}
+
 .banner-fade-up,
 .banner-fade-left {
   animation-duration: 700ms;

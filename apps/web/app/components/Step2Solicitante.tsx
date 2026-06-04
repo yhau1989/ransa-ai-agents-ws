@@ -13,6 +13,9 @@ const errorFieldClassName =
 const primaryButtonClassName =
   "rounded-full bg-ransa-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-ransa-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ransa-500 focus:ring-offset-2";
 
+const emailInputClassName =
+  "email-input-readable flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm caret-ransa-600 outline-none transition-all duration-200 hover:border-gray-400 focus:border-transparent focus:ring-2 focus:ring-ransa-500";
+
 interface Step2FormData {
   nombreCliente: string;
   nitCc: string;
@@ -83,7 +86,7 @@ function EmailSection({ emails, onChange }: EmailSectionProps) {
             }
           }}
           placeholder="Digite el correo para recibir respuesta"
-          className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-ransa-500 shadow-sm text-sm"
+          className={emailInputClassName}
         />
         <button
           type="button"
